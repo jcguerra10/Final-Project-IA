@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Virtual Shop</title>
+</head>
+<body>
+<header class="d-flex justify-content-center py-3">
+    <h1>Virtual Shop</h1>
+</header>
+<main class="container-md">
+    <div class="container-sm">
+        <form method="get">
+            <div class="justify-content-center">
+                <div class="mb-2">
+                    <h2><label class="form-label">Search</label></h2>
+                    <input type="search" name="search" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <ol>
+        <div class="row row-cols-auto">
+            {% for i in range(0, len) %}
+                <div class="col" style="padding: 1rem; min-height: 10rem;">
+                    <form action="{{ url_for('recommend') }}" method="post" class="row g-3">
+                        <div class="card rounded-3" style="width: 18rem; padding: .5rem; min-height: 5rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {{ products[i] }}
+                                </h5>
+                                <input type="text" name="prd" value={{ products[i] }}>
+                                <div class="col-12">
+                                    <button class="btn btn-primary" type="submit">Shop</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </ol>
+</main>
+</body>
+</html>
