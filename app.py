@@ -13,12 +13,14 @@ products = pd.DataFrame(products).drop_duplicates().values
 products = products.tolist()
 products = [item for sublist in products for item in sublist]
 print(products)
+list_products: list
 
 
 @app.route('/')
 def hello_world():
     q = request.args.get('search')
     print(q)
+    global list_products
     if q:
         list_products = []
         for i in products:
@@ -26,7 +28,7 @@ def hello_world():
             if q in temp:
                 list_products.append(temp)
     else:
-        list_products = products[1:51]
+        list_products = products[0:50]
     print(list_products)
     return render_template("home.html", len=len(list_products), products=list_products)
 
@@ -34,10 +36,12 @@ def hello_world():
 @app.route('/recommend', methods=['GET', 'POST'])
 def recommend():
     print("----")
-    prd = request.form['prd']
-    print(prd)
+    global list_products
+    i = request.form['i']
+    i = int(i)
+    print(i)
     print("----")
-    return render_template("recommendation.html", name_product=prd)
+    return render_template("recommendation.html", name_product=list_products[i])
 
 
 # @app.route('/search')
