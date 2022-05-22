@@ -9,12 +9,25 @@
     <title>Virtual Shop</title>
 </head>
 <body>
-<header class="d-flex justify-content-center py-3 bg-primary border-bottom">
-    <h1 class="text-white"> <a class="h1 text-decoration-none text-white" href="/">Virtual Shop</a></h1>
+<header class="text-center justify-content-center py-2 bg-dark flex-column">
+    <div class="p-2">
+        <h1 class="text-white"><a class="h1 text-decoration-none text-white" href="/">Virtual Shop</a></h1>
+    </div>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link active text-white" href="/">Shop Products</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="/stats">Stats</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="/graphs">Graphs</a>
+        </li>
+    </ul>
 </header>
-<main class="container-md">
-    <div class="container-sm">
-        <form method="get">
+<main class="container">
+    <div class="container-sm border-bottom">
+        <form method="get" class="mb-2">
             <div class="container-fluid mt-4">
                 <div class="d-flex justify-content-center flex-row" style="gap: 2rem;">
                     <div class="mb-2">
@@ -27,29 +40,34 @@
             </div>
         </form>
     </div>
-    <div class="container border-top mt-2">
-        <ol>
-            <div class="row row-cols-auto mt-4">
-                {% for i in range(0, len) %}
-                    <div class="col m-2" style="min-height: 10rem;">
-                        <form action="{{ url_for('recommend') }}" method="post" class="row g-3">
-                            <div class="card rounded-3" style="width: 18rem; padding: .5rem; min-height: 5rem;">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        {{ products[i] }}
-                                    </h5>
-                                    <input type="hidden" name="i" value={{ i }}>
-                                    <div class="col-12">
-                                        <button class="btn btn-primary" type="submit">Shop</button>
-                                    </div>
+    <div class="container my-4">
+        <div class="row row-cols-auto justify-content-center">
+            {% for i in range(0, len) %}
+                <div class="col m-1" style="min-height: 10rem;">
+                    <form action="{{ url_for('recommend') }}" method="post" class="row g-3">
+                        <div class="card rounded-3" style="width: 16rem; padding: .5rem; min-height: 12rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {{ products[i] }}
+                                </h5>
+                                <input type="hidden" name="i" value={{ i }}>
+                                <div class="col-12">
+                                    <button class="btn btn-primary" type="submit">Shop</button>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                {% endfor %}
-            </div>
-        </ol>
+                        </div>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </main>
+<footer class="text-center text-white bg-dark">
+    <!-- Copyright -->
+    <div class="text-center p-3 bg-dark">
+        © Virtual Shop
+    </div>
+    <!-- Copyright -->
+</footer>
 </body>
 </html>

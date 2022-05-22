@@ -15,6 +15,13 @@ products = [item for sublist in products for item in sublist]
 list_products: list
 r_products = []
 
+country = df['Country'].tolist()
+country = pd.DataFrame(country).drop_duplicates().values
+country = country.flatten()
+
+
+# country = [item for sublist in products for item in sublist]
+
 
 @app.route('/')
 def hello_world():
@@ -25,7 +32,7 @@ def hello_world():
         list_products = []
         for i in products:
             temp = str(i)
-            if q in temp:
+            if q.lower() in temp.lower():
                 list_products.append(temp)
     else:
         list_products = products[0:50]
@@ -42,7 +49,21 @@ def recommend():
     i = int(i)
     print(i)
     print("----")
-    return render_template("recommendation.html", len=len(r_products), name_product=list_products[i], r_products=r_products)
+    return render_template("recommendation.html", len=len(r_products), name_product=list_products[i],
+                           r_products=r_products)
+
+
+@app.route('/stats', methods=['GET', 'POST'])
+def stats():
+    c = request.args.get('country')
+    print(c)
+
+    return render_template("stats.html", len=len(country), country=country)
+
+
+@app.route('/graphs', methods=['GET', 'POST'])
+def graphs():
+    return render_template("graphs.html")
 
 
 if __name__ == '__main__':
