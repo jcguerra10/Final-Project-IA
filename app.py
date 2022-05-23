@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import copy
 import re
+from data_exploration_final import AprioriAlgorithm, result_chart
 
 app = Flask(__name__)
 
@@ -18,9 +19,6 @@ r_products = []
 country = df['Country'].tolist()
 country = pd.DataFrame(country).drop_duplicates().values
 country = country.flatten()
-
-
-# country = [item for sublist in products for item in sublist]
 
 
 @app.route('/')
@@ -57,13 +55,20 @@ def recommend():
 def stats():
     c = request.args.get('country')
     print(c)
+    html = ""
+    if c:
+        print(country[int(c)])
+        ret = AprioriAlgorithm((country[int(c)]))
+        html = ret.to_html()
 
-    return render_template("stats.html", len=len(country), country=country)
+    return render_template("stats.html", len=len(country), country=country, html=html)
 
 
 @app.route('/graphs', methods=['GET', 'POST'])
 def graphs():
-    return render_template("graphs.html")
+    chart = result_chart()
+    chart.savefig('/temp.png')
+    return render_template("graphs.html", chart=chart, locat='/temp.png')
 
 
 if __name__ == '__main__':
