@@ -48,6 +48,12 @@ def recommend():
     i = int(i)
     print(i)
     print("----")
+    q = list_products[i]
+    r_products = []
+    for k in products:
+        temp = str(k)
+        if q.lower() in temp.lower():
+            r_products.append(temp)
     return render_template("recommendation.html", len=len(r_products), name_product=list_products[i],
                            r_products=r_products)
 
@@ -69,7 +75,7 @@ def stats():
 def graphs():
     chart = result_chart()
     chart.savefig('temp.png')
-
+    chart.show()
     return render_template("graphs.html", chart=chart)
 
 
