@@ -1,9 +1,10 @@
+import PIL
 from flask import Flask, render_template, request
 import pandas as pd
 import numpy as np
 import copy
 import re
-from data_exploration_final import AprioriAlgorithm, result_chart
+from data_exploration_final import apriori_alg, result_chart
 
 app = Flask(__name__)
 
@@ -58,7 +59,7 @@ def stats():
     html = ""
     if c:
         print(country[int(c)])
-        ret = AprioriAlgorithm((country[int(c)]))
+        ret = apriori_alg((country[int(c)]))
         html = ret.to_html()
 
     return render_template("stats.html", len=len(country), country=country, html=html)
@@ -67,8 +68,9 @@ def stats():
 @app.route('/graphs', methods=['GET', 'POST'])
 def graphs():
     chart = result_chart()
-    chart.savefig('/temp.png')
-    return render_template("graphs.html", chart=chart, locat='/temp.png')
+    chart.savefig('temp.png')
+
+    return render_template("graphs.html", chart=chart)
 
 
 if __name__ == '__main__':

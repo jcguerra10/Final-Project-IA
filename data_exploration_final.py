@@ -392,34 +392,77 @@ from mlxtend.frequent_patterns import apriori, association_rules
 
 df_clean.Description = df_clean.Description.str.strip()
 
+#Apriori
+data = deepcopy(df)
 
-# def AprioriAlgorithm(x):
-#     apriori_df = (df_clean[df_clean['Country'] == x]).groupby(['Invoice', 'Description'])[
-#         'Quantity'].sum().unstack().fillna(0).reset_index(drop=True)
-#     apriori_df.columns
-#     apriori_df = apriori_df.applymap(lambda x: 0 if x <= 0 else 1)
-#     frq_items = apriori(apriori_df, min_support=0.003, use_colnames=True)
-#
-#     rules = association_rules(frq_items, metric="lift", min_threshold=1)
-#     rules = rules.sort_values(['confidence', 'lift'], ascending=[False, False])
-#     return rules
+data['Description'] = data['Description'].str.strip()
 
-def ap_help(x):
-    print(1)
-    apriori_df = (df_clean[df_clean['Country'] == x]).groupby(['Invoice', 'Description'])[
-        'Quantity'].sum().unstack().fillna(0).reset_index(drop=True)
-    print(2)
-    apriori_df = apriori_df.applymap(lambda x: 0 if x <= 0 else 1)
-    print(3)
-    frq_items = apriori(apriori_df, min_support=0.02, use_colnames=True, low_memory=True)
+# Dropping the rows without any invoice number
+data['Invoice'] = data['Invoice'].astype('str')
 
-    new_element = None
-    print(4)
-    return frq_items
+# Dropping all transactions which were done on credit
+data = data[~data['Invoice'].str.contains('C')]
+
+basket_France = (data[data['Country'] == "France"]
+                 .groupby(['Invoice', 'Description'])['Quantity']
+                 .sum().unstack().reset_index().fillna(0)
+                 .set_index('Invoice'))
+
+# Transactions done in the United Kingdom
+basket_UK = (data[data['Country'] == "United Kingdom"]
+             .groupby(['Invoice', 'Description'])['Quantity']
+             .sum().unstack().reset_index().fillna(0)
+             .set_index('Invoice'))
+
+# Transactions done in Portugal
+basket_Por = (data[data['Country'] == "Portugal"]
+              .groupby(['Invoice', 'Description'])['Quantity']
+              .sum().unstack().reset_index().fillna(0)
+              .set_index('Invoice'))
+
+basket_Sweden = (data[data['Country'] == "Sweden"]
+                 .groupby(['Invoice', 'Description'])['Quantity']
+                 .sum().unstack().reset_index().fillna(0)
+                 .set_index('Invoice'))
 
 
-def AprioriAlgorithm(x):
-    frq_items = ap_help(x)
+def hot_encode(x):
+    if x <= 0:
+        return 0
+    if x >= 1:
+        return 1
+
+
+# Encoding the datasets
+basket_encoded = basket_France.applymap(hot_encode)
+basket_France = basket_encoded
+
+basket_encoded = basket_UK.applymap(hot_encode)
+basket_UK = basket_encoded
+
+basket_encoded = basket_Por.applymap(hot_encode)
+basket_Por = basket_encoded
+
+basket_encoded = basket_Sweden.applymap(hot_encode)
+basket_Sweden = basket_encoded
+
+# Building the model
+frq_items_fr = apriori(basket_France, min_support=0.05, use_colnames=True, low_memory=True)
+frq_items_uk = apriori(basket_UK, min_support=0.05, use_colnames=True, low_memory=True)
+frq_items_pr = apriori(basket_Por, min_support=0.05, use_colnames=True, low_memory=True)
+frq_items_sw = apriori(basket_Sweden, min_support=0.05, use_colnames=True, low_memory=True)
+
+
+def apriori_alg(x):
+    frq_items: None
+    if x == 'France':
+        frq_items = frq_items_fr
+    elif x == 'United Kingdom':
+        frq_items = frq_items_uk
+    elif x == 'Portugal':
+        frq_items = frq_items_pr
+    elif x == 'Sweden':
+        frq_items = frq_items_sw
     rules = association_rules(frq_items, metric="lift", min_threshold=1)
     rules = rules.sort_values(['confidence', 'lift'], ascending=[False, False])
     return rules
